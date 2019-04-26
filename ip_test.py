@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
+# Python struct.unpack errors with TypeError: a bytes-like object is required, not 'str':
+# https://stackoverflow.com/questions/35249879/python-struct-unpack-errors-with-typeerror-a-bytes-like-object-is-required-not
 
 from socket import inet_aton
 
@@ -22,7 +24,7 @@ class IPIP(object):
         return struct.unpack(">L", b)
 
     def _unpack_C(self, b):
-        return struct.unpack("B", b)
+        return struct.unpack("B", bytes([b]))
 
     def load(self, file):
         try:
@@ -32,7 +34,7 @@ class IPIP(object):
                 self.offset, = self._unpack_N(self.binary[:4])
                 self.index = self.binary[4:self.offset]
         except Exception as e:
-            print e
+            print(e)
 
     def find(self, ip):
         if not ip:
@@ -69,4 +71,4 @@ if __name__ == '__main__':
 
     for ip in ip_lists:
         name = ipfinder.find(ip)
-        print ip, name
+        print(ip, name)
