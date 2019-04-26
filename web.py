@@ -1,12 +1,17 @@
 #!/usr/bin/env python
-# encoding: utf-8
-# Python struct.unpack errors with TypeError: a bytes-like object is required, not 'str':
-# https://stackoverflow.com/questions/35249879/python-struct-unpack-errors-with-typeerror-a-bytes-like-object-is-required-not
-
+# @Time    : 2019/4/26 18:56
+# @Author  : LiuWei
+# @Site    : 
+# @File    : web.py
+# @Software: PyCharm
+# -*- coding: utf-8 -*-
 from socket import inet_aton
 
 import os
 import struct
+
+from flask import Flask
+app = Flask(__name__)
 
 
 class IPIP(object):
@@ -65,10 +70,20 @@ class IPIP(object):
         return result
 
 
-if __name__ == '__main__':
-    ipfinder = IPIP()
-    ip_lists = ['125.224.237.90', '202.106.58.118', '219.137.150.255', "210.24.1.98"]
+@app.route("/")
+def hello():
+    return "Hello World!"
 
-    for ip in ip_lists:
-        name = ipfinder.find(ip)
-        print(ip, name)
+
+@app.route("/findIp/<ip>")
+def find_ip(ip):
+    ipfinder = IPIP()
+    result = ipfinder.find(ip)
+    print(result)
+    areas = str(result).split("\t")
+    print(areas)
+    return areas[0] + "-" + areas[1]
+
+
+if __name__ == '__main__':
+    app.run()
